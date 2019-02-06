@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<script src='//js.zapjs.com/js/download.js'></script>
+<script src='//code.jquery.com/jquery-1.9.1.min.js'></script>
+</head>
+<body>
+
+ <h2>文件上传示例</h2>
+    <hr/>
+    <form method="POST" enctype="multipart/form-data" action="/importUsers">
+        <p>
+            文件：<input type="file" name="file" />
+        </p>
+        <p>
+            <input type="submit" value="上传" />
+        </p>
+    </form>
+
+</script>
+
+</body>
+
+</html>
