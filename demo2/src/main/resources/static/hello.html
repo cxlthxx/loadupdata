@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<script src='//js.zapjs.com/js/download.js'></script>
+<script src='//code.jquery.com/jquery-1.9.1.min.js'></script>
+</head>
+<body>
+
+ <div class="sc_btn_box">
+    <input type="file" class="sc_btn" id="file">
+    <span class="file_uploader">选择</span>
+</div>      
+<div class="m_img_holder"></div>
+<div id="show_msg" style="margin-left:80px;"></div>
+<div class="xz_btn">
+     <input class="btn btn-success queding" id="submit" type="button" value="确定">
+     <input class="btn btn-success quxiao" type="button" value="取消">
+</div>
+
+
+<script type="text/javascript">
+$(function () {
+	   $("#submit").click(function () {
+	       if ($("#file").val().length > 0) {
+	            ajax_upload();
+	        }else {
+	           alert("请选择文件");
+	        }
+	     })
+	            
+	})
+	 
+	function ajax_upload(){
+	    var formData = new FormData();
+	    formData.append('file', $('#file')[0].files[0]);
+	    $.ajax({
+	        url:"http://localhost:8080/importUsers",
+	        type:"post",
+	        dataType:"text",
+	        data:formData,
+	        processData:false,
+	        contentType:false,
+	        success:function(data){
+	            alert('成功导入'+data+'条数据');
+	        },
+	        error:function(e){
+	        	console.log(e);
+	            alert("错误！！");
+	            
+	        }
+	    });        
+	   
+	}
+</script>
+</body>
+
+</html>
