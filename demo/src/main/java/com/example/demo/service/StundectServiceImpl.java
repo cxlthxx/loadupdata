@@ -19,5 +19,9 @@ public class StundectServiceImpl {
 		
 		return stundentService.saveAll(list);
 	}
+	
+	public List<Stundent> getStundent() {
+		return stundentService.findAll();
+	}
 
 }

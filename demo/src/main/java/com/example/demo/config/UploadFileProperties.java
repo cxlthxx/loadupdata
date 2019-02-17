@@ -5,10 +5,11 @@ import javax.servlet.MultipartConfigElement;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
-public class UploadFileProperties extends WebMvcConfigurerAdapter {
+public class UploadFileProperties implements WebMvcConfigurer {
 	
 	@Bean
     public MultipartConfigElement multipartConfigElement() {
