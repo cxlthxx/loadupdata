@@ -1,15 +1,19 @@
 package com.example.demo.controller;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.dao.Stundent;
+import com.example.demo.reactor.NioAcceptor;
 import com.example.demo.service.StundectServiceImpl;
 
 @RestController
@@ -26,11 +31,11 @@ public class StundentController {
 	
 	@Autowired
 	private StundectServiceImpl serviceImpl;
+	private ServletResponse response;
 	
 	
 	@RequestMapping("/findAll")
-	public String findAll() {
-		
+	public String findAll() throws IOException {
 		JSONObject json = new JSONObject();
 		List<Stundent> stundent2 = serviceImpl.getStundent();
 		json.put("stundent", stundent2);
@@ -96,4 +101,39 @@ public class StundentController {
 	    		return size;
 	
 		}
+	/**
+	 * 导出excel数据
+	 * @throws IOException 
+	 */
+	@RequestMapping("/upload")
+	public void upload(HttpServletResponse response) throws IOException {
+		XSSFWorkbook wb = new XSSFWorkbook();
+		//创建sheet表单
+		XSSFSheet sheet = wb.createSheet("成绩单");
+		//创建第一行
+		XSSFRow row1 = sheet.createRow(0);
+		row1.createCell(0).setCellValue("id");
+		row1.createCell(1).setCellValue("name");
+		row1.createCell(2).setCellValue("age");
+		XSSFRow row2 = null;
+		List<Stundent> stundent = serviceImpl.getStundent();
+			int i = 1;
+			for (Stundent stundent2 : stundent) {
+				XSSFRow createRow = sheet.createRow(i);
+				createRow.createCell(0).setCellValue(stundent2.getId());
+				createRow.createCell(1).setCellValue(stundent2.getName());
+				createRow.createCell(2).setCellValue(stundent2.getAge());
+				++i;
+		}
+			
+		
+		//输出excel文件
+		OutputStream output=response.getOutputStream();
+		response.setHeader("Content-disposition", "attachment; filename=stundent.xlsx");
+		response.setContentType("application/msexcel");        
+	    wb.write(output);
+	    output.close();
+		
+	}
+	
 }

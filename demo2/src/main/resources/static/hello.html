@@ -19,17 +19,27 @@
      <input class="btn btn-success queding" id="submit" type="button" value="确定">
      <input class="btn btn-success quxiao" type="button" value="取消">
 </div>
+<div>
+	<input id="upload" onclick="upload()" value="导出" type="button"/>
+</div>
 
+<script type="text/javascript" src="confUrl.js">
+var confUrl = confUrl
+</script>
 
-<script type="text/javascript">
+<script type="text/javascript" >
 $(function () {
 	   $("#submit").click(function () {
+		   alert(confUrl);
 	       if ($("#file").val().length > 0) {
 	            ajax_upload();
 	        }else {
 	           alert("请选择文件");
 	        }
 	     })
+	     
+	     
+	     
 	            
 	})
 	 
@@ -37,7 +47,7 @@ $(function () {
 	    var formData = new FormData();
 	    formData.append('file', $('#file')[0].files[0]);
 	    $.ajax({
-	        url:"http://localhost:8080/importUsers",
+	        url:'/hello',
 	        type:"post",
 	        dataType:"text",
 	        data:formData,
@@ -53,6 +63,11 @@ $(function () {
 	        }
 	    });        
 	   
+	}
+	
+	function upload() {
+		
+		 location.assign(confUrl+'/upload');
 	}
 </script>
 </body>
