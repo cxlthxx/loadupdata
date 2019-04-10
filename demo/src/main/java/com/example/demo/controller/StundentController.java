@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -25,13 +26,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.demo.dao.Stundent;
 import com.example.demo.reactor.NioAcceptor;
 import com.example.demo.service.StundectServiceImpl;
+import com.example.demo.service.configUtil;
 
 @RestController
 public class StundentController {
 	
 	@Autowired
 	private StundectServiceImpl serviceImpl;
-	private ServletResponse response;
 	
 	
 	@RequestMapping("/findAll")
@@ -54,52 +55,74 @@ public class StundentController {
 	@RequestMapping("/importUsers")
 	public String importUsers(@RequestParam MultipartFile file,HttpServletRequest request,HttpServletResponse response) throws IOException{
 		//解决跨域报错问题
-		response.setHeader("Access-Control-Allow-Origin", "http://localhost:1122");
-		List<Stundent> list = new ArrayList<Stundent>();
-		String size = "";
-		XSSFWorkbook workbook =null;
-		//创建Excel，读取文件内容 2007版('.xlsx')
-		 workbook = new XSSFWorkbook(file.getInputStream());
-		 //读取文件2003版 ('.xls')
-	//	 workbook = new HSSFWorkbook(file.getInputStream());
+//		response.setHeader("Access-Control-Allow-Origin", "http://localhost:1122");
+//		List<Stundent> list = new ArrayList<Stundent>();
+//		String size = "";
+//		XSSFWorkbook workbook =null;
+//		//创建Excel，读取文件内容 2007版('.xlsx')
+//		 workbook = new XSSFWorkbook(file.getInputStream());
+//		 //读取文件2003版 ('.xls')
+//	//	 workbook = new HSSFWorkbook(file.getInputStream());
+//	
+//		//获取所有的工作表的的数量
+//	    int numOfSheet = workbook.getNumberOfSheets();
+//	    //遍历这个这些表
+//	    for (int i = 0; i < numOfSheet; i++) {
+//	        //获取一个sheet也就是一个工作簿
+//	        Sheet sheet = workbook.getSheetAt(i);
+//	        int lastRowNum = sheet.getLastRowNum();
+//	        //从第一行开始第一行一般是标题
+//	        for (int j = 1; j <= lastRowNum; j++) {
+//	            Row row = sheet.getRow(j);
+//	            Stundent stundent = new Stundent();
+//	            //获取电话单元格
+//	            if (row.getCell(0) != null) {
+//	                row.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
+//	                Integer id = Integer.valueOf(row.getCell(0).getStringCellValue());
+//	                stundent.setId(id);
+//	            }
+//	            //密码
+//	            if (row.getCell(1) != null) {
+//	                row.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
+//	                String name = row.getCell(1).getStringCellValue();
+//	                stundent.setName(name);;
+//	            }
+//	            //姓名
+//	            if (row.getCell(2) != null) {
+//	                row.getCell(2).setCellType(Cell.CELL_TYPE_STRING);
+//	                Integer age = Integer.valueOf(row.getCell(2).getStringCellValue());
+//	                stundent.setAge(age);
+//	            }
+//	            list.add(stundent);
+//	        }
+//	        
+//	    }
+//	    List<Stundent> list1 = serviceImpl.findAll(list);
+//	    size = Integer.toString(list1.size());
+//	    		return size;
 	
-		//获取所有的工作表的的数量
-	    int numOfSheet = workbook.getNumberOfSheets();
-	    //遍历这个这些表
-	    for (int i = 0; i < numOfSheet; i++) {
-	        //获取一个sheet也就是一个工作簿
-	        Sheet sheet = workbook.getSheetAt(i);
-	        int lastRowNum = sheet.getLastRowNum();
-	        //从第一行开始第一行一般是标题
-	        for (int j = 1; j <= lastRowNum; j++) {
-	            Row row = sheet.getRow(j);
-	            Stundent stundent = new Stundent();
-	            //获取电话单元格
-	            if (row.getCell(0) != null) {
-	                row.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
-	                Integer id = Integer.valueOf(row.getCell(0).getStringCellValue());
-	                stundent.setId(id);
-	            }
-	            //密码
-	            if (row.getCell(1) != null) {
-	                row.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
-	                String name = row.getCell(1).getStringCellValue();
-	                stundent.setName(name);;
-	            }
-	            //姓名
-	            if (row.getCell(2) != null) {
-	                row.getCell(2).setCellType(Cell.CELL_TYPE_STRING);
-	                Integer age = Integer.valueOf(row.getCell(2).getStringCellValue());
-	                stundent.setAge(age);
-	            }
-	            list.add(stundent);
-	        }
-	        
-	    }
-	    List<Stundent> list1 = serviceImpl.findAll(list);
-	    size = Integer.toString(list1.size());
-	    		return size;
-	
+	    if (!file.isEmpty()) {  
+            try {  
+                // 文件保存路径  
+                String filePath = request.getSession().getServletContext().getRealPath("/")  
+                        + file.getOriginalFilename();  
+                // 转存文件  
+                file.transferTo(new File(filePath));  
+            } catch (Exception e) {  
+                e.printStackTrace();  
+            }  
+        }  
+	    
+	    String filePath = request.getSession().getServletContext().getRealPath("/");  
+        File uploadDest = new File(filePath);  
+        String[] fileNames = uploadDest.list();  
+        for (int i = 0; i < fileNames.length; i++) {  
+            //打印出文件名  
+            System.out.println(fileNames[i]);  
+        }  
+        return null;  
+		
+		
 		}
 	/**
 	 * 导出excel数据
@@ -134,6 +157,18 @@ public class StundentController {
 	    wb.write(output);
 	    output.close();
 		
+	}
+	
+	@RequestMapping("/hello")
+	public String getValue() {
+		
+		return configUtil.getValue("name");
+	}
+	
+	@RequestMapping("/test")
+	public void setValue() {
+		Stundent stundent2 = serviceImpl.getStundent().get(0);
+		configUtil.setValue(stundent2.getName(), stundent2.getAge().toString());
 	}
 	
 }

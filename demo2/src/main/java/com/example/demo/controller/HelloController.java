@@ -7,10 +7,13 @@ import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.example.demo.util.configUtil;
 
 @RestController
 public class HelloController {
@@ -50,6 +53,12 @@ public class HelloController {
 	            }
 	        }
 		 
+	}
+	
+	@RequestMapping("/test/{id}")
+	public String getValue(@PathVariable String id) {
+		return configUtil.getValue("classPath",id);
+		
 	}
 	
 	
